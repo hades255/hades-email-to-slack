@@ -1,4 +1,4 @@
-# Upwork Unread Message Alert
+# Unread Message Alert
 
 ## Purpose
 

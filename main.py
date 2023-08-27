@@ -77,60 +77,54 @@ def send_unread_notification_mail(mail_account):
                         # Retrieve email details
                         receiver = msg["To"]
                         subject = msg["Subject"]
-                        
-                        if "You have unread messages" in subject or "Invitation to Interview for" in subject: 
-                            # send email details to slack
-                            owner_name_block = {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": name + " :thumbsup:",
-                                    "emoji": True
-                                }
-                            }
 
-                            divider_block = {
-                                "type": "divider"
-                            }
+                        # Check if the email has multiple parts (such as plain text and HTML)
+                        if msg.is_multipart():
+                            # Iterate over each part of the email
+                            for part in msg.get_payload():
+                                # Check if the part is plain text
+                                if part.get_content_type() == 'text/plain':
+                                    # Get the body/text of the email
+                                    body = part.get_payload()
+                        else:
+                            # If the email is not multipart, it means it's a single part (e.g., plain text)
+                            body = msg.get_payload()
 
-                            account_mail_block = {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": receiver,
-                                    "emoji": True
-                                }
+                        account_mail_block = {
+                            "type": "header",
+                            "text": {
+                                "type": "plain_text",
+                                "text": receiver,
+                                "emoji": True
                             }
+                        }
 
-                            subject_block = {
-                                "type": "section",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": subject,
-                                    "emoji": True
-                                },
-                                
-                            }
+                        subject_block = {
+                            "type": "section",
+                            "text": {
+                                "type": "plain_text",
+                                "text": subject,
+                                "emoji": True
+                            },
                             
-                            bottom_line_block = {
-                                "type": "header",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": ":dollar: :heavy_dollar_sign: :moneybag: :money_with_wings: :dollar: :heavy_dollar_sign: :moneybag: :money_with_wings:",
-                                    "emoji": True
-                                }
-                            }
+                        }
+                        body_block = {
+                            "type": "section",
+                            "text": {
+                                "type": "plain_text",
+                                "text": body,
+                                "emoji": True
+                            },
+                            
+                        }
 
-                            block_data = [owner_name_block, divider_block, account_mail_block,divider_block, subject_block, divider_block,bottom_line_block ]
-                            post_text_message_to_slack("Hi, <@" + user_id + "> <!channel>")
-                            post_block_message_to_slack(block_data)
-                            time.sleep(1)
+                        block_data = [account_mail_block, subject_block,body_block ]
+                        post_text_message_to_slack("Hi, <@" + user_id + "> <!channel>")
+                        post_block_message_to_slack(block_data)
+                        time.sleep(1)
 
                 # Mark each unread message as read
                 mail_account.store(email_id, "+FLAGS", "\\Seen")
-                
-                
-
 
     except Exception as e:
         print("Error occurred while checking inbox:", str(e))
