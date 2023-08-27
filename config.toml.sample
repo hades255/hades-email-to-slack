@@ -1,0 +1,27 @@
+# Configuration
+
+[owner]
+user_id = "..."
+name = "..."
+
+# ==================== sample config for gmail=====================
+# ##############################################
+# In case of gmail, enable IMAP in mail setting
+# ##############################################
+# [[source_email_accounts]]
+# imap_server = "imap.gmail.com"
+# imap_port = 993
+# email_address = "nodesparrow@gmail.com"
+# email_password = "xxxxxx"
+
+# ==================== sample config for outlook===================
+# [[source_email_accounts]]
+# imap_server = "imap-mail.outlook.com"
+# imap_port = 993
+# email_address = "nodesparrow@outlook.com"
+# email_password = "xxxxxx"
+
+# do not touch this
+[slack]
+slack_token = 'xoxb-4...................................w'
+channel = 'u..........t'
